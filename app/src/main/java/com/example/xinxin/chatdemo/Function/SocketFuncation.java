@@ -12,6 +12,9 @@ import com.example.xinxin.chatdemo.Object.MessageObj;
 import com.example.xinxin.chatdemo.bean.Constants;
 import com.example.xinxin.chatdemo.bean.InfoType;
 import com.example.xinxin.chatdemo.bean.PkgHead;
+import com.example.xinxin.chatdemo.data.Row;
+import com.example.xinxin.chatdemo.data.Tbl;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -25,6 +28,7 @@ public class SocketFuncation {
     //发送头信息
     public void sendHeadMessage(MessageObj messageObj) throws IOException {
         PkgHead head = new PkgHead();
+
         head.set_InfoType(messageObj.msgType);
         head.set_InfoLen(messageObj.content.getBytes().length);
         outputToServer(head.get_NetHeadByte(),head.get_NetHeadByte().length);
@@ -172,7 +176,13 @@ public class SocketFuncation {
                 try {
                     MessageObj messageObj=new MessageObj(InfoType.SearchRowsLike);
                    // messageObj.content="BASE∈rolelist∈"+mac;
-                    messageObj.content="BASE∈epuserlist∈name≈∫company≈威";
+                   // messageObj.content="BASE∈epuserlist∈name≈∫company≈威";
+                   Row row=new Row();
+                   row.setName="BASE";
+                   row.tblName="epuserlist";
+                   row.setVal("name","秀");
+                   row.setVal("company","威米信");
+                   messageObj.content=row.toString();
                     Log.e("smx","messageObj.content:"+messageObj.content);
                     SocketFuncation socketFuncation=new SocketFuncation();
                     int c =socketFuncation.IOfuncition(messageObj);

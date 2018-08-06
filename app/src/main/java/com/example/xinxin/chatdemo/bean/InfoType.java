@@ -66,9 +66,9 @@ public enum InfoType {
 
     SearchRowsIn(73),
     getIcons(74),//下载图片
-    updateRowIcon(75)//更新图片
+    updateRowIcon(75),//更新图片
+    ZSearchRowsLike(159)
     ;
-
     private int _value;
 
     private InfoType(int value) {
