@@ -2,7 +2,6 @@ package com.example.xinxin.chatdemo;
 import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -13,9 +12,7 @@ import com.example.xinxin.chatdemo.CallBack.GetFileCallBack;
 import com.example.xinxin.chatdemo.CallBack.QRcodeCallBack;
 import com.example.xinxin.chatdemo.CallBack.SearchCallBack;
 import com.example.xinxin.chatdemo.Function.SocketFuncation;
-
 import java.io.IOException;
-
 public class MainActivity extends AppCompatActivity implements QRcodeCallBack,GetFileCallBack,SearchCallBack{
     private ProgressBar progressBar;
     private ImageView imageView;
@@ -29,7 +26,6 @@ public class MainActivity extends AppCompatActivity implements QRcodeCallBack,Ge
         imageView= findViewById(R.id.imageView);
         textView=findViewById(R.id.seachText);
         editText=findViewById(R.id.editSearch);
-
         findViewById(R.id.button1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -5,9 +5,6 @@ import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.widget.EditText;
-import android.widget.TextView;
-
 import com.example.xinxin.chatdemo.CallBack.GetFileCallBack;
 import com.example.xinxin.chatdemo.CallBack.QRcodeCallBack;
 import com.example.xinxin.chatdemo.CallBack.SearchCallBack;
@@ -161,8 +158,6 @@ public class SocketFuncation {
             public void handleMessage (Message msg){
                 switch(msg.what) {
                     case 0:
-                        //imageView.setImageBitmap((Bitmap)msg.obj);
-                        //textView.setText((String)msg.obj);
                         String result=(String)msg.obj;
                         searchCallBack.searhSuccess(result);
                         break;
@@ -175,8 +170,9 @@ public class SocketFuncation {
             @Override
             public void run() {
                 try {
-                    MessageObj messageObj=new MessageObj(InfoType.GetRowById);
-                    messageObj.content="BASE∈rolelist∈"+mac;
+                    MessageObj messageObj=new MessageObj(InfoType.SearchRowsLike);
+                   // messageObj.content="BASE∈rolelist∈"+mac;
+                    messageObj.content="BASE∈epuserlist∈name≈∫company≈威";
                     Log.e("smx","messageObj.content:"+messageObj.content);
                     SocketFuncation socketFuncation=new SocketFuncation();
                     int c =socketFuncation.IOfuncition(messageObj);

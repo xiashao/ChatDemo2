@@ -8,8 +8,10 @@ import android.os.Build;
 public class Constants {
     public static final String basePath = "www.vmeet.cc";
     public static final String Version = "4";
-    public static final String ip = "123.56.3.72";
-    public static final int port = 30003;
+    //public static final String ip = "123.56.3.72";
+    public static final String ip = "123.56.221.127";
+   // public static final String ip="127.0.0.1";
+    public static final int port =30005;
     public static final int HeaderLength = 32;//默认消息头长度
     public static String getPhoneType() {
         // 硬件制造商（手机品牌）
