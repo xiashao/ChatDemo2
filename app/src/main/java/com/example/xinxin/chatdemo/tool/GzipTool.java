@@ -21,7 +21,8 @@ public class GzipTool {
      * @return
      * @throws Exception
      */
-    public static String decompressForGzip(String zipData) throws Exception {
+    public static String decompressForGzip(String zipData) throws Exception {//此方法不可用，可以用下面的方法直接处理流
+        // 直接用此方法处理被压缩的字符串是不可行的。
         return decompressStrForGzip(new ByteArrayInputStream(zipData.getBytes()));
     }
 

@@ -7,10 +7,12 @@ import android.os.Message;
 import android.util.Log;
 import com.example.xinxin.chatdemo.CallBack.GetFileCallBack;
 import com.example.xinxin.chatdemo.CallBack.GetFileListCallBack;
+import com.example.xinxin.chatdemo.CallBack.GetdirListCallBack;
 import com.example.xinxin.chatdemo.CallBack.QRcodeCallBack;
 import com.example.xinxin.chatdemo.CallBack.SearchCallBack;
 import com.example.xinxin.chatdemo.Object.MessageObj;
 import com.example.xinxin.chatdemo.bean.Constants;
+import com.example.xinxin.chatdemo.bean.GetType;
 import com.example.xinxin.chatdemo.bean.InfoType;
 import com.example.xinxin.chatdemo.bean.PkgHead;
 import com.example.xinxin.chatdemo.data.Row;
@@ -80,8 +82,18 @@ public class SocketFuncation {
         try {
             InputStream inputStream = socket.getInputStream();
             n=inputStream.read(bs, 0, length);
-            if(messageObj.msgType.equals(InfoType.ZSearchRowsLike)){
-                searchResult= GzipTool.decompressStrForGzip(inputStream);
+            if(length!=32){
+                if(messageObj.getType.equals(GetType.Zip)){
+                     searchResult= GzipTool.decompressStrForGzip(inputStream);
+                 }
+                 else if(messageObj.getType.equals(GetType.String))
+                 {
+                     searchResult=new String(bs1,0,n);
+                 }
+                 else if(messageObj.getType.equals(GetType.File))
+                {
+
+                }
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -206,7 +218,7 @@ public class SocketFuncation {
             }
         }).start();
     }
-    public static void getFileList(final String string,final GetFileListCallBack getFileListCallBack) throws InterruptedException {
+    public static void getFileList(final MessageObj messageObj,final GetFileListCallBack getFileListCallBack) throws InterruptedException {
         @SuppressLint("HandlerLeak") final Handler handler=new Handler(){
             public void handleMessage (Message msg){
                 switch(msg.what) {
@@ -223,14 +235,41 @@ public class SocketFuncation {
             @Override
             public void run() {
                 try {
+                    SocketFuncation socketFuncation=new SocketFuncation(messageObj);
+                    int c =socketFuncation.IOfuncition(messageObj);
+                    Log.e("smx","socketFuncation.searchResult:"+socketFuncation.searchResult);
+                    handler.obtainMessage(0,socketFuncation.searchResult).sendToTarget();
+                }catch (Exception e) {
+                    e.printStackTrace();
+                    handler.obtainMessage(1).sendToTarget();
+                }
+            }
+        }).start();
+    }
+    public static void getDirList(final String string,final GetdirListCallBack getdirListCallBack) throws InterruptedException {
+        @SuppressLint("HandlerLeak") final Handler handler=new Handler(){
+            public void handleMessage (Message msg){
+                switch(msg.what) {
+                    case 0:
+                        String result=(String)msg.obj;
+                        getdirListCallBack.getDirlistSuccess(result);
+                        break;
+                    case 1:
+                        getdirListCallBack.getDirlistError();
+                }
+            }
+        };
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
                     MessageObj messageObj=new MessageObj(InfoType.GetFileList);
                     messageObj.content=string;
                     Log.e("smx","messageObj.content:"+messageObj.content);
                     SocketFuncation socketFuncation=new SocketFuncation(messageObj);
                     int c =socketFuncation.IOfuncition(messageObj);
-                    String searchResult=new String(socketFuncation.bs1,0,c);
-                    Log.e("smx","msearchResult:"+searchResult);
-                    handler.obtainMessage(0,searchResult).sendToTarget();
+                    Log.e("smx","msearchResult:"+socketFuncation.searchResult);
+                    handler.obtainMessage(0,socketFuncation.searchResult).sendToTarget();
                 }catch (Exception e) {
                     e.printStackTrace();
                     handler.obtainMessage(1).sendToTarget();

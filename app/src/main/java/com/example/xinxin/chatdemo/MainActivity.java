@@ -10,12 +10,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.example.xinxin.chatdemo.CallBack.GetFileCallBack;
 import com.example.xinxin.chatdemo.CallBack.GetFileListCallBack;
+import com.example.xinxin.chatdemo.CallBack.GetdirListCallBack;
 import com.example.xinxin.chatdemo.CallBack.QRcodeCallBack;
 import com.example.xinxin.chatdemo.CallBack.SearchCallBack;
 import com.example.xinxin.chatdemo.Function.SocketFuncation;
+import com.example.xinxin.chatdemo.Object.MessageObj;
+import com.example.xinxin.chatdemo.bean.GetType;
+import com.example.xinxin.chatdemo.bean.InfoType;
 
 import java.io.IOException;
-public class MainActivity extends AppCompatActivity implements QRcodeCallBack,GetFileCallBack,SearchCallBack,GetFileListCallBack{
+
+import static com.example.xinxin.chatdemo.bean.InfoType.GetDirList;
+
+public class MainActivity extends AppCompatActivity implements QRcodeCallBack,GetFileCallBack,SearchCallBack,GetFileListCallBack,GetdirListCallBack{
     private ProgressBar progressBar;
     private ImageView imageView;
     private TextView textView;
@@ -55,16 +62,31 @@ public class MainActivity extends AppCompatActivity implements QRcodeCallBack,Ge
             @Override
             public void onClick(View view) {
                 try {
-                    getFilelist(editText.getText().toString());
+                    MessageObj messageObj=new MessageObj(InfoType.GetFileList,GetType.String,editText.getText().toString());
+                    getFilelist(messageObj);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        findViewById(R.id.button4).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    getDirlist(editText.getText().toString());
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
         });
     }
-    public void getFilelist(String mac) throws InterruptedException {
+    public void getFilelist(MessageObj messageObj) throws InterruptedException {
         SocketFuncation socketFuncation=new SocketFuncation();
-        socketFuncation.getFileList(mac,this);
+        socketFuncation.getFileList(messageObj,this);
+    }
+    public void getDirlist(String mac) throws InterruptedException {
+        SocketFuncation socketFuncation=new SocketFuncation();
+        socketFuncation.getDirList(mac,this);
     }
     public void searchById(String mac) throws InterruptedException {
         SocketFuncation socketFuncation=new SocketFuncation();
@@ -113,14 +135,20 @@ public class MainActivity extends AppCompatActivity implements QRcodeCallBack,Ge
     public void searchError() {
         Toast.makeText(this, "查询失败", Toast.LENGTH_SHORT).show();
     }
-
     @Override
     public void gflSuccess(String string) {
         textView.setText(string);
     }
-
     @Override
     public void gflError() {
+        Toast.makeText(this, "查询失败", Toast.LENGTH_SHORT).show();
+    }
+    @Override
+    public void getDirlistSuccess(String string) {
+        textView.setText(string);
+    }
+    @Override
+    public void getDirlistError() {
         Toast.makeText(this, "查询失败", Toast.LENGTH_SHORT).show();
     }
 }
