@@ -7,6 +7,7 @@ import android.os.Message;
 import android.util.Log;
 import com.example.xinxin.chatdemo.CallBack.GetFileCallBack;
 import com.example.xinxin.chatdemo.CallBack.GetFileListCallBack;
+import com.example.xinxin.chatdemo.CallBack.GetStringCallBack;
 import com.example.xinxin.chatdemo.CallBack.GetdirListCallBack;
 import com.example.xinxin.chatdemo.CallBack.QRcodeCallBack;
 import com.example.xinxin.chatdemo.CallBack.SearchCallBack;
@@ -82,11 +83,13 @@ public class SocketFuncation {
         try {
             InputStream inputStream = socket.getInputStream();
             n=inputStream.read(bs, 0, length);
+            if(messageObj.getType.equals(GetType.Zip)){
+                Log.e("smx","开始解压"+messageObj.content);
+                searchResult= GzipTool.decompressStrForGzip(inputStream);
+                Log.e("smx","解压完成"+searchResult);
+            }
             if(length!=32){
-                if(messageObj.getType.equals(GetType.Zip)){
-                     searchResult= GzipTool.decompressStrForGzip(inputStream);
-                 }
-                 else if(messageObj.getType.equals(GetType.String))
+                 if(messageObj.getType.equals(GetType.String))
                  {
                      searchResult=new String(bs1,0,n);
                  }
@@ -179,55 +182,16 @@ public class SocketFuncation {
             }
         }).start();
     }
-    public static void Searchshow(final String mac, final SearchCallBack searchCallBack) throws InterruptedException {
+    public static void getString(final MessageObj messageObj,final GetStringCallBack getStringCallBack) throws InterruptedException {
         @SuppressLint("HandlerLeak") final Handler handler=new Handler(){
             public void handleMessage (Message msg){
                 switch(msg.what) {
                     case 0:
                         String result=(String)msg.obj;
-                        searchCallBack.searhSuccess(result);
+                        getStringCallBack.getStringSuccess(result);
                         break;
                     case 1:
-                        searchCallBack.searchError();
-                }
-            }
-        };
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    MessageObj messageObj=new MessageObj(InfoType.ZSearchRowsLike);
-                    // messageObj.content="BASE∈rolelist∈"+mac;
-                    // messageObj.content="BASE∈epuserlist∈name≈∫company≈威";
-                    Row row=new Row();
-                    row.setName="BASE";
-                    row.tblName="epuserlist";
-                    row.setVal("name","秀");
-                    row.setVal("company","威米信");
-                    messageObj.content=row.toString();
-                    Log.e("smx","messageObj.content:"+messageObj.content);
-                    SocketFuncation socketFuncation=new SocketFuncation(messageObj);
-                    int c =socketFuncation.IOfuncition(messageObj);
-                   // String searchResult=new String(socketFuncation.bs1,0,c);
-                    Log.e("smx","msearchResult:"+socketFuncation.searchResult);
-                    handler.obtainMessage(0,socketFuncation.searchResult).sendToTarget();
-                }catch (Exception e) {
-                    e.printStackTrace();
-                    handler.obtainMessage(1).sendToTarget();
-                }
-            }
-        }).start();
-    }
-    public static void getFileList(final MessageObj messageObj,final GetFileListCallBack getFileListCallBack) throws InterruptedException {
-        @SuppressLint("HandlerLeak") final Handler handler=new Handler(){
-            public void handleMessage (Message msg){
-                switch(msg.what) {
-                    case 0:
-                        String result=(String)msg.obj;
-                        getFileListCallBack.gflSuccess(result);
-                        break;
-                    case 1:
-                        getFileListCallBack.gflError();
+                        getStringCallBack.getStringError();
                 }
             }
         };
@@ -238,37 +202,6 @@ public class SocketFuncation {
                     SocketFuncation socketFuncation=new SocketFuncation(messageObj);
                     int c =socketFuncation.IOfuncition(messageObj);
                     Log.e("smx","socketFuncation.searchResult:"+socketFuncation.searchResult);
-                    handler.obtainMessage(0,socketFuncation.searchResult).sendToTarget();
-                }catch (Exception e) {
-                    e.printStackTrace();
-                    handler.obtainMessage(1).sendToTarget();
-                }
-            }
-        }).start();
-    }
-    public static void getDirList(final String string,final GetdirListCallBack getdirListCallBack) throws InterruptedException {
-        @SuppressLint("HandlerLeak") final Handler handler=new Handler(){
-            public void handleMessage (Message msg){
-                switch(msg.what) {
-                    case 0:
-                        String result=(String)msg.obj;
-                        getdirListCallBack.getDirlistSuccess(result);
-                        break;
-                    case 1:
-                        getdirListCallBack.getDirlistError();
-                }
-            }
-        };
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    MessageObj messageObj=new MessageObj(InfoType.GetFileList);
-                    messageObj.content=string;
-                    Log.e("smx","messageObj.content:"+messageObj.content);
-                    SocketFuncation socketFuncation=new SocketFuncation(messageObj);
-                    int c =socketFuncation.IOfuncition(messageObj);
-                    Log.e("smx","msearchResult:"+socketFuncation.searchResult);
                     handler.obtainMessage(0,socketFuncation.searchResult).sendToTarget();
                 }catch (Exception e) {
                     e.printStackTrace();

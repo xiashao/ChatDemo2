@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.example.xinxin.chatdemo.CallBack.GetFileCallBack;
 import com.example.xinxin.chatdemo.CallBack.GetFileListCallBack;
+import com.example.xinxin.chatdemo.CallBack.GetStringCallBack;
 import com.example.xinxin.chatdemo.CallBack.GetdirListCallBack;
 import com.example.xinxin.chatdemo.CallBack.QRcodeCallBack;
 import com.example.xinxin.chatdemo.CallBack.SearchCallBack;
@@ -22,7 +23,7 @@ import java.io.IOException;
 
 import static com.example.xinxin.chatdemo.bean.InfoType.GetDirList;
 
-public class MainActivity extends AppCompatActivity implements QRcodeCallBack,GetFileCallBack,SearchCallBack,GetFileListCallBack,GetdirListCallBack{
+public class MainActivity extends AppCompatActivity implements QRcodeCallBack,GetFileCallBack,GetStringCallBack{
     private ProgressBar progressBar;
     private ImageView imageView;
     private TextView textView;
@@ -39,7 +40,8 @@ public class MainActivity extends AppCompatActivity implements QRcodeCallBack,Ge
             @Override
             public void onClick(View view) {
                 try {
-                    searchById(editText.getText().toString());
+                    MessageObj messageObj=new MessageObj(InfoType.ZSearchRowsLike,GetType.Zip,"BASE∈epuserlist∈name≈秀∫company≈威米信∫");
+                    getString(messageObj);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -63,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements QRcodeCallBack,Ge
             public void onClick(View view) {
                 try {
                     MessageObj messageObj=new MessageObj(InfoType.GetFileList,GetType.String,editText.getText().toString());
-                    getFilelist(messageObj);
+                    getString(messageObj);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -73,25 +75,17 @@ public class MainActivity extends AppCompatActivity implements QRcodeCallBack,Ge
             @Override
             public void onClick(View view) {
                 try {
-                    getDirlist(editText.getText().toString());
+                    MessageObj messageObj=new MessageObj(InfoType.GetDirList,GetType.String,editText.getText().toString());
+                    getString(messageObj);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
         });
     }
-    public void getFilelist(MessageObj messageObj) throws InterruptedException {
+    public void getString(MessageObj messageObj) throws InterruptedException {
         SocketFuncation socketFuncation=new SocketFuncation();
-        socketFuncation.getFileList(messageObj,this);
-    }
-    public void getDirlist(String mac) throws InterruptedException {
-        SocketFuncation socketFuncation=new SocketFuncation();
-        socketFuncation.getDirList(mac,this);
-    }
-    public void searchById(String mac) throws InterruptedException {
-        SocketFuncation socketFuncation=new SocketFuncation();
-        socketFuncation.Searchshow(mac,this);
-
+        socketFuncation.getString(messageObj,this);
     }
     public void getQRcode(String string){
         SocketFuncation socketFuncation=new SocketFuncation();
@@ -127,29 +121,15 @@ public class MainActivity extends AppCompatActivity implements QRcodeCallBack,Ge
     public void getFileError() {
         Toast.makeText(this, "下载失败", Toast.LENGTH_SHORT).show();
     }
+
     @Override
-    public void searhSuccess(String result) {
-        textView.setText(result);
-    }
-    @Override
-    public void searchError() {
-        Toast.makeText(this, "查询失败", Toast.LENGTH_SHORT).show();
-    }
-    @Override
-    public void gflSuccess(String string) {
+    public void getStringSuccess(String string) {
         textView.setText(string);
     }
+
     @Override
-    public void gflError() {
-        Toast.makeText(this, "查询失败", Toast.LENGTH_SHORT).show();
-    }
-    @Override
-    public void getDirlistSuccess(String string) {
-        textView.setText(string);
-    }
-    @Override
-    public void getDirlistError() {
-        Toast.makeText(this, "查询失败", Toast.LENGTH_SHORT).show();
+    public void getStringError() {
+            Toast.makeText(this, "查询失败", Toast.LENGTH_SHORT).show();
     }
 }
 
